@@ -11,7 +11,7 @@ func main() {
 	a := app.New()
 	w := a.NewWindow("Hello World")
 	w.SetContent(container.NewPadded(
-		components.NewBusArrivalTimes([]int{3, 14}),
+		components.NewOccupancyBars(0.67),
 	))
 	w.ShowAndRun()
 }
