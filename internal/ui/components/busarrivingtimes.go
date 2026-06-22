@@ -30,7 +30,9 @@ func (b *BusArrivalTimes) MinSize() fyne.Size {
 	return fyne.NewSize(minWidth, minHeight)
 }
 
-func (b *BusArrivalTimes) arrivalText(index int, prefix string) string {
+// Helper function to set the text of the arrival time.
+// Sets to `-` if Arrivals slice doesn't have that index.
+func (b *BusArrivalTimes) getArrivalText(index int, prefix string) string {
 	if index < len(b.Arrivals) {
 		return fmt.Sprintf("%s%d min", prefix, b.Arrivals[index])
 	}
@@ -39,8 +41,8 @@ func (b *BusArrivalTimes) arrivalText(index int, prefix string) string {
 
 // CreateRenderer implements [fyne.Widget].
 func (b *BusArrivalTimes) CreateRenderer() fyne.WidgetRenderer {
-	top := canvas.NewText(b.arrivalText(0, ""), color.White)
-	bottom := canvas.NewText(b.arrivalText(1, "Next: "), color.NRGBA{R: 0x5F, G: 0x7C, B: 0xBA, A: 0xFF})
+	top := canvas.NewText(b.getArrivalText(0, ""), color.White)
+	bottom := canvas.NewText(b.getArrivalText(1, "Next: "), color.NRGBA{R: 0x5F, G: 0x7C, B: 0xBA, A: 0xFF})
 
 	return &busArrivalTimesRenderer{
 		widget: b,
@@ -57,6 +59,7 @@ type busArrivalTimesRenderer struct {
 	bottom *canvas.Text
 }
 
+// This is the actual vertical layout.
 func (r *busArrivalTimesRenderer) Layout(size fyne.Size) {
 	topH := r.top.MinSize().Height
 	r.top.Move(fyne.NewPos(0, 0))
@@ -72,8 +75,8 @@ func (r *busArrivalTimesRenderer) MinSize() fyne.Size {
 }
 
 func (r *busArrivalTimesRenderer) Refresh() {
-	r.top.Text = r.widget.arrivalText(0, "")
-	r.bottom.Text = r.widget.arrivalText(1, "Next: ")
+	r.top.Text = r.widget.getArrivalText(0, "")
+	r.bottom.Text = r.widget.getArrivalText(1, "Next: ")
 	canvas.Refresh(r.widget)
 }
 
