@@ -1,17 +1,7 @@
 package main
 
-import (
-	"bus-app/internal/ui/components"
-
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-)
+import "bus-app/internal/ui"
 
 func main() {
-	a := app.New()
-	w := a.NewWindow("Hello World")
-	w.SetContent(container.NewPadded(
-		components.NewOccupancyBars(0.67),
-	))
-	w.ShowAndRun()
+	ui.Run()
 }

@@ -23,11 +23,11 @@ const (
 type OccupancyBars struct {
 	widget.BaseWidget
 
-	AvailabilityRate float32
+	OccupancyRate float32
 }
 
 func NewOccupancyBars(occupancyRate float32) *OccupancyBars {
-	o := &OccupancyBars{AvailabilityRate: occupancyRate}
+	o := &OccupancyBars{OccupancyRate: occupancyRate}
 	o.ExtendBaseWidget(o)
 	return o
 }
@@ -37,7 +37,7 @@ func (o *OccupancyBars) MinSize() fyne.Size {
 }
 
 func (o *OccupancyBars) CreateRenderer() fyne.WidgetRenderer {
-	col := occupancyColor(o.AvailabilityRate)
+	col := occupancyColor(o.OccupancyRate)
 
 	var bars [numOccBars]*canvas.Rectangle
 	for i := range bars {
@@ -46,7 +46,7 @@ func (o *OccupancyBars) CreateRenderer() fyne.WidgetRenderer {
 		bars[i] = r
 	}
 
-	label := canvas.NewText(occupancyLabel(o.AvailabilityRate), col)
+	label := canvas.NewText(occupancyLabel(o.OccupancyRate), col)
 	label.TextSize = theme.CaptionTextSize()
 	label.Alignment = fyne.TextAlignCenter
 
@@ -58,22 +58,22 @@ func (o *OccupancyBars) CreateRenderer() fyne.WidgetRenderer {
 func occupancyColor(rate float32) color.RGBA {
 	switch {
 	case rate < 0.33:
-		return color.RGBA{R: 0xD1, G: 0x5F, B: 0x61, A: 0xFF}
+		return color.RGBA{R: 0x5F, G: 0xD1, B: 0x85, A: 0xFF}
 	case rate < 0.67:
 		return color.RGBA{R: 0xD1, G: 0xCD, B: 0x5F, A: 0xFF}
 	default:
-		return color.RGBA{R: 0x5F, G: 0xD1, B: 0x85, A: 0xFF}
+		return color.RGBA{R: 0xD1, G: 0x5F, B: 0x61, A: 0xFF}
 	}
 }
 
 func occupancyLabel(rate float32) string {
 	switch {
 	case rate < 0.33:
-		return "Standing only"
+		return "Free seats"
 	case rate < 0.67:
 		return "Few seats"
 	default:
-		return "Free seats"
+		return "Standing only"
 	}
 }
 
@@ -113,12 +113,12 @@ func (r *occupancyBarsRenderer) MinSize() fyne.Size {
 }
 
 func (r *occupancyBarsRenderer) Refresh() {
-	col := occupancyColor(r.widget.AvailabilityRate)
+	col := occupancyColor(r.widget.OccupancyRate)
 	for _, bar := range r.bars {
 		bar.FillColor = col
 		bar.Refresh()
 	}
-	r.label.Text = occupancyLabel(r.widget.AvailabilityRate)
+	r.label.Text = occupancyLabel(r.widget.OccupancyRate)
 	r.label.Color = col
 	canvas.Refresh(r.widget)
 }
